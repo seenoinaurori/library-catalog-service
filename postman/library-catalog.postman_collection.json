@@ -1,0 +1,176 @@
+{
+  "info": {
+    "_postman_id": "d32123e1-4ab3-4ac8-a97f-2b632e4a1b91",
+    "name": "Library Catalog Service",
+    "description": "CRUD, filtering, search, pagination, and validation examples for the Library Catalog API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Genres",
+      "item": [
+        {
+          "name": "List genres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/genres"
+          },
+          "response": []
+        },
+        {
+          "name": "Create genre",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Science Fiction\",\n  \"slug\": \"science-fiction\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/genres"
+          },
+          "response": []
+        },
+        {
+          "name": "Get genre by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/genres/{{genreId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Update genre",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Science Fiction & Speculative\",\n  \"slug\": \"science-fiction-speculative\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/genres/{{genreId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete genre",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/genres/{{genreId}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "List books with combined filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/books?genre={{genreId}}&search=dune&page=2&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["books"],
+              "query": [
+                { "key": "genre", "value": "{{genreId}}" },
+                { "key": "search", "value": "dune" },
+                { "key": "page", "value": "2" },
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create book",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"The Quiet Orbit\",\n  \"author\": \"Mara Voss\",\n  \"isbn\": \"9780306406157\",\n  \"description\": \"A navigation engineer follows a signal beyond the edge of a settled star system.\",\n  \"coverImage\": \"https://example.com/quiet-orbit.jpg\",\n  \"totalCopies\": 8,\n  \"availableCopies\": 6,\n  \"genre\": \"{{genreId}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/books"
+          },
+          "response": []
+        },
+        {
+          "name": "Create book with empty body (validation example)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/books"
+          },
+          "response": [
+            {
+              "id": "empty-book-validation-400",
+              "name": "400 Validation failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": { "mode": "raw", "raw": "{}" },
+                "url": "{{baseUrl}}/books"
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "cookie": [],
+              "body": "{\n  \"error\": \"Validation failed\",\n  \"details\": [\n    { \"field\": \"title\", \"message\": \"is required\" },\n    { \"field\": \"author\", \"message\": \"is required\" },\n    { \"field\": \"isbn\", \"message\": \"is required\" },\n    { \"field\": \"description\", \"message\": \"is required\" },\n    { \"field\": \"coverImage\", \"message\": \"is required\" },\n    { \"field\": \"totalCopies\", \"message\": \"is required\" },\n    { \"field\": \"availableCopies\", \"message\": \"is required\" },\n    { \"field\": \"genre\", \"message\": \"is required\" }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get book by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/books/{{bookId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Update book",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"The Quiet Orbit\",\n  \"author\": \"Mara Voss\",\n  \"isbn\": \"9780306406157\",\n  \"description\": \"A navigation engineer follows a signal beyond the edge of a settled star system.\",\n  \"coverImage\": \"https://example.com/quiet-orbit.jpg\",\n  \"totalCopies\": 8,\n  \"availableCopies\": 6,\n  \"genre\": \"{{genreId}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/books/{{bookId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete book",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/books/{{bookId}}"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "genreId", "value": "64b000000000000000000001" },
+    { "key": "bookId", "value": "64b000000000000000000002" }
+  ]
+}
