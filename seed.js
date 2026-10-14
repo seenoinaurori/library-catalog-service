@@ -3,6 +3,13 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Book = require('./models/Book');
 const Genre = require('./models/Genre');
+const User = require('./models/User');
+
+const librarianCredentials = {
+  username: 'librarian',
+  email: 'librarian@library.test',
+  password: 'LibraryAdmin2026!',
+};
 
 function makeIsbn13(sequence) {
   const prefix = `978000000${String(sequence).padStart(3, '0')}`;
@@ -161,6 +168,18 @@ async function seed() {
     await mongoose.connect(MONGODB_URI);
     await Promise.all([Book.deleteMany({}), Genre.deleteMany({})]);
 
+    await User.updateMany(
+      { role: 'librarian', email: { $ne: librarianCredentials.email } },
+      { $set: { role: 'patron' } }
+    );
+    let librarian = await User.findOne({ email: librarianCredentials.email });
+    if (!librarian) librarian = new User();
+    librarian.username = librarianCredentials.username;
+    librarian.email = librarianCredentials.email;
+    librarian.password = librarianCredentials.password;
+    librarian.role = 'librarian';
+    await librarian.save();
+
     const genres = await Genre.insertMany(genreData);
     const genreIds = new Map(genres.map((genre) => [genre.slug, genre._id]));
     const books = bookData.map((book, index) => {
@@ -174,7 +193,7 @@ async function seed() {
     });
 
     await Book.insertMany(books);
-    console.log(`Seeded ${genres.length} genres and ${books.length} books.`);
+    console.log(`Seeded one librarian, ${genres.length} genres, and ${books.length} books.`);
   } finally {
     await mongoose.disconnect();
   }

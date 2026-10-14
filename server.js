@@ -3,11 +3,16 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const app = require('./app');
 
-const { MONGODB_URI } = process.env;
+const { MONGODB_URI, JWT_SECRET } = process.env;
 const port = Number(process.env.PORT || 3000);
 
 if (!MONGODB_URI) {
   console.error('MONGODB_URI is not set. Add it to your .env file.');
+  process.exit(1);
+}
+
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error('JWT_SECRET must be set to a value of at least 32 characters.');
   process.exit(1);
 }
 

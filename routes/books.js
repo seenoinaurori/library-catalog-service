@@ -1,6 +1,7 @@
 const express = require('express');
 const Book = require('../models/Book');
 const asyncHandler = require('../middleware/asyncHandler');
+const { requireAuth, requireRole } = require('../middleware/auth');
 const { validateBook, validateObjectId } = require('../middleware/validate');
 
 const router = express.Router();
@@ -74,10 +75,16 @@ router.get(
   })
 );
 
-router.post('/', validateBook, asyncHandler(async (req, res) => {
-  const book = await Book.create(req.validatedBody);
-  res.status(201).json({ data: book });
-}));
+router.post(
+  '/',
+  requireAuth,
+  requireRole('librarian'),
+  validateBook,
+  asyncHandler(async (req, res) => {
+    const book = await Book.create(req.validatedBody);
+    res.status(201).json({ data: book });
+  })
+);
 
 router.get(
   '/:id',
@@ -91,20 +98,23 @@ router.get(
 
 router.put(
   '/:id',
+  requireAuth,
+  requireRole('librarian'),
   validateObjectId('id'),
   validateBook,
   asyncHandler(async (req, res) => {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.validatedBody, {
-      new: true,
-      runValidators: true,
-    });
+    const book = await Book.findById(req.params.id);
     if (!book) return res.status(404).json({ error: 'Book not found.' });
+    Object.assign(book, req.validatedBody);
+    await book.save();
     return res.status(200).json({ data: book });
   })
 );
 
 router.delete(
   '/:id',
+  requireAuth,
+  requireRole('librarian'),
   validateObjectId('id'),
   asyncHandler(async (req, res) => {
     const book = await Book.findByIdAndDelete(req.params.id);
