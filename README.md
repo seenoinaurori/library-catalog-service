@@ -74,3 +74,7 @@ Book creation, update, and deletion require an authenticated librarian. Requests
 Book create and update require all schema fields. The API rejects invalid field types, ISBN-13 values, cover URLs, copy counts, and missing genre references with `400` JSON such as `{ "error": "Validation failed", "details": [{ "field": "genre", "message": "does not reference an existing Genre" }] }`. Error responses never include stack traces or raw database errors.
 
 The Postman collection at [`postman/library-catalog.postman_collection.json`](postman/library-catalog.postman_collection.json) contains requests for every route, including an example saved `400` response for an empty book body. Set its `baseUrl`, `genreId`, and `bookId` variables before running requests that require document IDs.
+
+## Catalog frontend
+
+The patron-facing React/Vite application is in [`client/`](client/). Follow its [setup and demo instructions](client/README.md) to run the responsive catalog alongside this API. The client uses API-side genre and search filtering, including combined filters and pagination.
